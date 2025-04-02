@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart'; // Import the QR code package
+import 'package:intl/intl.dart'; // For formatting the date and time
 
 void main() {
   runApp(MyApp());
@@ -15,20 +16,27 @@ class MyApp extends StatelessWidget {
 }
 
 class QRCodePage extends StatelessWidget {
+  // Sample student data (you could replace this with actual data from a database or user input)
+  final String studentId = "12345";  // Unique ID for the student or employee
+  final String studentName = "John Doe";  // Name of the student or employee
+
   @override
   Widget build(BuildContext context) {
-    // Sample data to encode in the QR code
-    String data = "https://flutter.dev"; // You can change this to any string you want
-    'data' = return(body)
+    // Get the current time in the format of 'yyyy-MM-dd HH:mm:ss'
+    String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    // Encode the attendance data as a string
+    String attendanceData = "id=$studentId&name=$studentName&timestamp=$currentTime";
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("QR Code Generator"),
+        title: Text("Attendance QR Code Generator"),
       ),
       body: Center(
         child: QrImage(
-          data: data,   // The data to encode in the QR code
-          version: QrVersions.auto,  // Set to auto or specify version
+          data: 'attendanceData',  // This is the encoded data (attendance info)
+          attendanceData = id=12345&name=JohnDoe&timestamp=2025-04-02 10:00:00
+          version: QrVersions.auto,  // Auto version of the QR code
           size: 200.0,  // Size of the QR code
           gapless: false,  // Optional: whether to have a gapless rendering
         ),
