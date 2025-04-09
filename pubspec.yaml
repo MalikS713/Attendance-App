@@ -1,6 +1,10 @@
+name: hc_attendance_app  # Add the name of your project here
+description: A new Flutter project.
+
 dependencies:
   flutter:
     sdk: flutter
-  qr_flutter: ^4.0.0  # Add this line for QR code generation please 
+  qr_flutter: ^4.0.0  # Add this line for QR code generation
+
 
 

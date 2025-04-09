@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart'; // Import the QR code package
 import 'package:intl/intl.dart'; // For formatting the date and time
 
+
+
 void main() {
   runApp(MyApp());
 }
@@ -16,9 +18,9 @@ class MyApp extends StatelessWidget {
 }
 
 class QRCodePage extends StatelessWidget {
-  // Sample student data (you could replace this with actual data from a database or user input)
-  final String studentId = "12345";  // Unique ID for the student or employee
-  final String studentName = "John Doe";  // Name of the student or employee
+  // Sample employee data (you could replace this with actual data from a database or user input)
+  final String employeeId = "12345";  // Unique ID for the employee or employee
+  final String employeeName = "John Doe";  // Name of the employee or employee
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class QRCodePage extends StatelessWidget {
     String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     // Encode the attendance data as a string
-    String attendanceData = "id=$studentId&name=$studentName&timestamp=$currentTime";
+    String attendanceData = "id=$employeeId&name=$employeeName&timestamp=$currentTime";
 
     return Scaffold(
       appBar: AppBar(
