@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:csv/csv.dart';  // Import the CSV package
+import 'package:flutter/services.dart' show rootBundle;
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: QRCodePage(),
+    );
+  }
+}
+
+class QRCodePage extends StatelessWidget {
+  final String employeeId = "123";
+  final String employeeName = "John Doe";
+
+  // Sample method to load CSV data from an asset
+  Future<List<List<dynamic>>> loadCSVData() async {
+    // Load your CSV file (make sure to add it to your assets in pubspec.yaml)
+    final rawData = await rootBundle.loadString('assets/work_schedule.csv');
+    List<List<dynamic>> csvData = const CsvToListConverter().convert(rawData);
+    return csvData;
+  }
+
+  // This method will filter and return the details for the specified employee
+  Future<Map<String, String>> getEmployeeDetails() async {
+    // Load and parse the CSV data
+    List<List<dynamic>> csvData = await loadCSVData();
+    
+    for (var row in csvData) {
+      if (row[0].toString() == employeeId) {
+        // Employee found, map the details
+        return {
+          "employeeName": row[1].toString(),
+          "offDay": row[2].toString(),
+          "daysOff": row[3].toString(),
+          "managerReplacement": row[4].toString(),
+        };
+      }
+    }
+    return {};  // Return empty if no matching employee
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Get the current time
+    String currentTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    // Encode the attendance data as a string
+    String attendanceData = "id=$employeeId&name=$employeeName&timestamp=$currentTime";
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Attendance QR Code Generator"),
+      ),
+      body: FutureBuilder<Map<String, String>>(
+        future: getEmployeeDetails(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading data'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No employee data found.'));
+          }
+
+          var employeeDetails = snapshot.data!;
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Display the attendance QR Code
+                QrImage(
+                  data: attendanceData,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                  gapless: false,
+                ),
+                SizedBox(height: 20),
+                // Display employee's work schedule information
+                Text(
+                  'Employee: ${employeeDetails['employeeName']}',
+                  style: TextStyle(fontSize: 18),
+                ),
+                Text(
+                  'Off Day: ${employeeDetails['offDay']}',
+                  style: TextStyle(fontSize: 18),
+                ),
+                Text(
+                  'Days Off: ${employeeDetails['daysOff']}',
+                  style: TextStyle(fontSize: 18),
+                ),
+                Text(
+                  'Manager Replacement: ${employeeDetails['managerReplacement']}',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
