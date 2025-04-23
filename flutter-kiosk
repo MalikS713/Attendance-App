@@ -11,15 +11,24 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // For now, we're hardcoding the values
+    // Later, you could collect them via a login form or input field
     return MaterialApp(
-      home: QRCodePage(),
+      home: QRCodePage(
+        employeeId: "123",
+        employeeName: "John Doe",
+      ),
     );
   }
 }
 
 class QRCodePage extends StatelessWidget {
-  final String employeeId = "123";
-  final String employeeName = "John Doe";
+  final String employeeId;
+  final String employeeName;
+
+  QRCodePage({required this.employeeId, required this.employeeName});
+}
+
 
   // Sample method to load CSV data from an asset
   Future<List<List<dynamic>>> loadCSVData() async {
